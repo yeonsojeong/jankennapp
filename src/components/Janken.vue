@@ -6,13 +6,13 @@
     <div class="imgArea"><img v-bind:src="src" alt=""></div>
     <ul>
             <li>
-                <button v-on:click="onSelected" class="button" type="button" value="0" disabled>グー</button>
+                <button v-on:click="onSelected(0)" class="button" type="button" value="0" disabled>グー</button>
             </li>
             <li>
-                <button v-on:click="onSelected" class="button" type="button" value="1" disabled>チョキ</button>
+                <button v-on:click="onSelected(1)" class="button" type="button" value="1" disabled>チョキ</button>
             </li>
             <li>
-                <button v-on:click="onSelected" class="button" type="button" value="2" disabled>パー</button>
+                <button v-on:click="onSelected(2)" class="button" type="button" value="2" disabled>パー</button>
             </li>
         </ul>
   </div>
@@ -34,6 +34,11 @@ export default {
                 resultMessage: ''
             }
   },
+  computed:{
+      score: function(){
+          return this.$store.getters.getData
+      }
+  },
   methods:{
       
       changeImg(number) {
@@ -53,7 +58,7 @@ export default {
                     btn.removeAttribute('disabled');
                 }
       },
-      onSelected() {
+      onSelected(myHand) {
           clearInterval(this.timer)
           let btns = document.querySelectorAll('.button');
                 for( let btn of btns ) {
@@ -62,9 +67,12 @@ export default {
           document.getElementById('gameStart').removeAttribute('disabled')
           //let button = e.target
           //window.console.log(this.src)
+          let resultNum = parseInt(this.imgList.indexOf(this.src), 10)
           //let resultNum = parseInt(this.imgList.indexOf(this.src), 10)
           //let selectNum = parseInt(button.value, 10) /* 第一引数に渡した値を10進数に変換して返す */
           //let kekkaNum = this.decisionJanken(selectNum, resultNum)
+          let kekkaNum = this.decisionJanken(myHand,resultNum)
+          this.$store.commit('setData', kekkaNum)
 
           //window.console.log('勝ち負け(0 は負け, 1は勝ち,2は引き分け)→' + this.decisionJanken(selectNum, resultNum))
       },
